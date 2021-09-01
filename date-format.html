@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CrossKnowledge - Code challenge</title>
+</head>
+<body>
+<script>
+    // This will create elements for testing, DO NOT change this code
+    (() => {
+        const MS_PER_MINUTE = 60000
+        const NOW = new Date()
+        let minutes = [0, 1, 30, 60, 6 * 60, 23 * 60, 24 * 60]
+        let dates = []
+
+        minutes.forEach((i) => dates.push(new Date(NOW - i * MS_PER_MINUTE)))
+
+        dates.forEach((item) => {
+            let el = document.createElement("div")
+            el.innerHTML = "Started "
+
+            let dt = document.createElement('span')
+            dt.className = 'js-date-format'
+            dt.innerHTML = item.toISOString()
+            el.appendChild(dt)
+            document.body.appendChild(el)
+        })
+
+
+
+
+        //get all clocks in the dom using the provided class
+        const clocks = document.querySelectorAll("span.js-date-format");
+
+        //main function to update the times
+        function updateTimes() {
+            clocks.forEach(function (item, key) {
+                let startDate = new Date(dates[key]);
+
+                let difference = new Date().getTime() - startDate.getTime();
+
+                let seconds = Math.floor(difference / 1000);
+                let minutes = Math.floor(seconds / 60);
+
+                if (minutes < 1440) {
+                    item.innerHTML = getTimeSpent(minutes, seconds);
+                } else {
+                    item.innerHTML = startDate.toISOString();
+                }
+
+            })
+        }
+
+        //main calculation logics
+        function getTimeSpent(minutes, seconds) {
+
+            if (minutes >= 60 && minutes < 1440) {
+                if (minutes >= 120) {
+                    return `${Math.floor(seconds / 3600)} hours ago`;
+                }
+                return `${Math.floor(seconds / 3600)} hour ago`;
+            }
+
+            if (minutes >= 1 && minutes < 60) {
+                if (minutes === 1) {
+                    return `${minutes} minute ago`;
+                }
+                return `${minutes} minutes ago`;
+            } else {
+                if (seconds > 1) {
+                    return `${seconds} seconds ago`;
+                }
+                return `${seconds} second ago`;
+            }
+
+        }
+
+        //setinterval for update time using 1 second interval
+        setInterval(() => {
+            updateTimes();
+        }, 1000);
+
+    })();
+
+
+</script>
+</body>
+</html>
